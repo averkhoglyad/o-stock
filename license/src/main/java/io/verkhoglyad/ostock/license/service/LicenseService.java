@@ -1,11 +1,10 @@
 package io.verkhoglyad.ostock.license.service;
 
 import io.verkhoglyad.ostock.license.model.License;
+import io.verkhoglyad.ostock.license.model.Message;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
-import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
@@ -13,8 +12,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class LicenseService {
 
     private static final AtomicInteger ID_HOLDER = new AtomicInteger(1000);
-
-    private final MessageSource messages;
 
     public License getLicense(String licenseId, String organizationId) {
         var license = new License();
@@ -28,26 +25,23 @@ public class LicenseService {
         return license;
     }
 
-    public String createLicense(License license, String organizationId, Locale locale) {
-        String responseMessage = null;
-        if (license != null) {
-            license.setOrganizationId(organizationId);
-            responseMessage = messages.getMessage("license.create.message", null, locale).formatted(license.toString());
+    public Message createLicense(License license, String organizationId) {
+        if (license == null) {
+            return null;
         }
-        return responseMessage;
+        license.setOrganizationId(organizationId);
+        return new Message("license.create.message", license.toString());
     }
 
-    public String updateLicense(License license, String organizationId, Locale locale) {
-        String responseMessage = null;
-        if (license != null) {
-            license.setOrganizationId(organizationId);
-            responseMessage = messages.getMessage("license.update.message", null, locale).formatted(license.toString());
+    public Message updateLicense(License license, String organizationId) {
+        if (license == null) {
+            return null;
         }
-        return responseMessage;
+        license.setOrganizationId(organizationId);
+        return new Message("license.update.message", license.toString());
     }
 
-    public String deleteLicense(String licenseId, String organizationId, Locale locale) {
-        String responseMessage = messages.getMessage("license.delete.message", null, locale).formatted(licenseId, organizationId);
-        return responseMessage;
+    public Message deleteLicense(String licenseId, String organizationId) {
+        return new Message("license.delete.message", licenseId, organizationId);
     }
 }
