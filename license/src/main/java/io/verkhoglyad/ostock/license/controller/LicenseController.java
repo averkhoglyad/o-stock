@@ -1,10 +1,10 @@
 package io.verkhoglyad.ostock.license.controller;
 
 import io.verkhoglyad.ostock.license.model.License;
-import io.verkhoglyad.ostock.license.model.Message;
 import io.verkhoglyad.ostock.license.service.LicenseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
+import org.springframework.hateoas.RepresentationModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,28 +22,29 @@ public class LicenseController {
     private final MessageSource messageSource;
 
     @GetMapping("/{licenseId}")
-    public ResponseEntity<License> getLicense(@PathVariable("organizationId") String organizationId,
-                                              @PathVariable("licenseId") String licenseId) {
+    public ResponseEntity<RepresentationModel<?>> getLicense(@PathVariable("organizationId") String organizationId,
+                                                             @PathVariable("licenseId") String licenseId) {
         var license = service.getLicense(licenseId, organizationId);
-        license.add(linkTo(methodOn(LicenseController.class)
+        RepresentationModel<?> representationModel = RepresentationModel.of(license);
+        representationModel.add(linkTo(methodOn(LicenseController.class)
                         .getLicense(organizationId, license.getLicenseId()))
                         .withSelfRel(),
                 linkTo(methodOn(LicenseController.class)
                         .createLicense(organizationId, license, null))
-                        .withRel("createLicense"),
+                        .withRel("create"),
                 linkTo(methodOn(LicenseController.class)
                         .updateLicense(organizationId, license, null))
-                        .withRel("updateLicense"),
+                        .withRel("update"),
                 linkTo(methodOn(LicenseController.class)
                         .deleteLicense(organizationId, license.getLicenseId(), null))
-                        .withRel("deleteLicense"));
-        return ResponseEntity.ok(license);
+                        .withRel("delete"));
+        return ResponseEntity.ok(representationModel);
     }
 
     @PostMapping
     public ResponseEntity<String> createLicense(@PathVariable("organizationId") String organizationId,
                                                 @RequestBody License license,
-                                                @RequestHeader(value = "Accept-Language", required = false) Locale locale) {
+                                                @RequestHeader(name = "Accept-Language", required = false) Locale locale) {
         var message = service.createLicense(license, organizationId);
         return ResponseEntity.ok(messageSource.getMessage(message.message(), message.args(), locale));
     }
@@ -51,15 +52,15 @@ public class LicenseController {
     @PutMapping
     public ResponseEntity<String> updateLicense(@PathVariable("organizationId") String organizationId,
                                                 @RequestBody License license,
-                                                @RequestHeader(value = "Accept-Language", required = false) Locale locale) {
+                                                @RequestHeader(name = "Accept-Language", required = false) Locale locale) {
         var message = service.updateLicense(license, organizationId);
         return ResponseEntity.ok(messageSource.getMessage(message.message(), message.args(), locale));
     }
 
-    @DeleteMapping(value="/{licenseId}")
+    @DeleteMapping("/{licenseId}")
     public ResponseEntity<String> deleteLicense(@PathVariable("organizationId") String organizationId,
                                                 @PathVariable("licenseId") String licenseId,
-                                                @RequestHeader(value = "Accept-Language", required = false) Locale locale) {
+                                                @RequestHeader(name = "Accept-Language", required = false) Locale locale) {
         var message = service.deleteLicense(licenseId, organizationId);
         return ResponseEntity.ok(messageSource.getMessage(message.message(), message.args(), locale));
     }
