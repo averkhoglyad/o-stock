@@ -2,19 +2,17 @@ FROM openjdk:17-slim as build
 
 LABEL maintainer="John Doe <a@a.com>"
 
-ARG JAR_FILE
-
-COPY ${JAR_FILE} app.jar
-
-RUN mkdir -p target/dependency && (cd target/dependency; jar -xf /app.jar)
+WORKDIR application
+ARG JAR_FILE=target/*.jar
+COPY ${JAR_FILE} application.jar
+RUN java -Djarmode=layertools -jar application.jar extract
 
 FROM openjdk:17-slim
 
-VOLUME /tmp
+WORKDIR application
+COPY --from=build application/dependencies/ ./
+COPY --from=build application/spring-boot-loader/ ./
+COPY --from=build application/snapshot-dependencies/ ./
+COPY --from=build application/application/ ./
 
-ARG DEPENDENCY=/target/dependency
-COPY --from=build ${DEPENDENCY}/BOOT-INF/lib /app/lib
-COPY --from=build ${DEPENDENCY}/META-INF /app/META-INF
-COPY --from=build ${DEPENDENCY}/BOOT-INF/classes /app
-
-ENTRYPOINT ["java","-cp","app:app/lib/*","io.verkhoglyad.ostock.license.LicenseApplication"]
+ENTRYPOINT ["java", "org.springframework.boot.loader.JarLauncher"]
