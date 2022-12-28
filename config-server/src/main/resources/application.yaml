@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: config-server
+  profiles:
+    active: native
+  cloud:
+    config:
+      server:
+        native:
+          search-locations: classpath:/conf
+server:
+  port: 9999
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
