@@ -1,5 +1,13 @@
 version: "3.9"
 services:
+  configserver:
+    image: ostock/config-server:1.0-SNAPSHOT
+    ports:
+      - "9999:9999"
+    networks:
+      backend:
+        aliases:
+          - "configserver"
   licensing:
     image: ostock/license:1.0-SNAPSHOT
     ports:
@@ -10,7 +18,7 @@ services:
       backend:
         aliases:
           - "licenseservice"
-          
+
 networks:
   backend:
     driver: bridge
