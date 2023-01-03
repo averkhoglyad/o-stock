@@ -1,47 +1,50 @@
 package io.verkhoglyad.ostock.license.service;
 
+import io.verkhoglyad.ostock.license.config.ServiceConfig;
 import io.verkhoglyad.ostock.license.model.License;
 import io.verkhoglyad.ostock.license.model.Message;
+import io.verkhoglyad.ostock.license.repository.LicenseRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class LicenseService {
 
-    private static final AtomicInteger ID_HOLDER = new AtomicInteger(1000);
+    private final LicenseRepository licenseRepository;
+    private final MessageSource messages;
+    private final ServiceConfig config;
 
     public License getLicense(String licenseId, String organizationId) {
-        var license = new License();
-        license.setId(ID_HOLDER.incrementAndGet());
+        License license = licenseRepository
+                .findByOrganizationIdAndLicenseId(organizationId, licenseId);
+        if (null == license) {
+            throw new IllegalArgumentException(
+                    String.format(messages.getMessage("license.search.error.message", null, null),
+                            licenseId, organizationId)
+            );
+        }
+        return license.withComment(config.getProperty());
+    }
+
+    public License createLicense(License license) {
+        license.setLicenseId(UUID.randomUUID().toString());
+        licenseRepository.save(license);
+        return license.withComment(config.getProperty());
+    }
+
+    public License updateLicense(License license) {
+        licenseRepository.save(license);
+        return license.withComment(config.getProperty());
+    }
+
+    public Message deleteLicense(String licenseId) {
+        License license = new License();
         license.setLicenseId(licenseId);
-        license.setOrganizationId(organizationId);
-        license.setDescription("Software product");
-        license.setProductName("O-Stock");
-        license.setLicenseType("full");
-
-        return license;
-    }
-
-    public Message createLicense(License license, String organizationId) {
-        if (license == null) {
-            return null;
-        }
-        license.setOrganizationId(organizationId);
-        return new Message("license.create.message", license.toString());
-    }
-
-    public Message updateLicense(License license, String organizationId) {
-        if (license == null) {
-            return null;
-        }
-        license.setOrganizationId(organizationId);
-        return new Message("license.update.message", license.toString());
-    }
-
-    public Message deleteLicense(String licenseId, String organizationId) {
-        return new Message("license.delete.message", licenseId, organizationId);
+        licenseRepository.delete(license);
+        return new Message("license.delete.message", licenseId);
     }
 }
