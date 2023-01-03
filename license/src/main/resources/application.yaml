@@ -3,5 +3,3 @@ spring:
     name: licensing-service
   profiles:
     active: dev
-  config:
-    import: configserver:http://localhost:9999

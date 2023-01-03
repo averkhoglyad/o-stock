@@ -1,0 +1,52 @@
+version: "3.9"
+services:
+  database:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+      POSTGRES_DB: "ostock_dev"
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/1-init.sql
+      - ./data.sql:/docker-entrypoint-initdb.d/2-data.sql
+    networks:
+      backend:
+        aliases:
+          - "database"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      
+  configs:
+    image: ostock/config-server:1.0-SNAPSHOT
+    ports:
+      - "9999:9999"
+    networks:
+      backend:
+        aliases:
+          - "configs"
+
+  licensing:
+    image: ostock/license:1.0-SNAPSHOT
+    ports:
+      - "8080:8080"
+    command: "--spring.config.import=configserver:http://configs:9999"
+    environment:
+      - "SPRING_PROFILES_ACTIVE=dev"
+    depends_on:
+      database:
+        condition: service_healthy
+      configs:
+        condition: service_started
+    networks:
+      backend:
+        aliases:
+          - "licenseservice"
+
+networks:
+  backend:
+    driver: bridge
