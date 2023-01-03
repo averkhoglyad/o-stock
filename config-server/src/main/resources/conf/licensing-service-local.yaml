@@ -1,0 +1,8 @@
+example:
+  property: I AM LOCAL
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ostock
+    username: user
+    password: pass
