@@ -1,7 +1,6 @@
 example:
   property: I AM DEFAULT
 
-
 spring:
   jpa:
     hibernate.ddl-auto: none
@@ -15,8 +14,8 @@ spring:
   datasource:
     platform: postgres
     url: jdbc:postgresql://localhost:5432/ostock
-    username: postgres
-    password: postgres
+    username: user
+    password: pass
     testWhileIdle: true
     validationQuery: SELECT 1
   database.driverClassName: org.postgresql.Driver
