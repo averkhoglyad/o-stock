@@ -3,10 +3,10 @@ example:
 
 spring:
   jpa:
-    hibernate.ddl-auto: none
     database: POSTGRESQL
     show-sql: true
     hibernate:
+      ddl-auto: none
       naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
     properties:
       hibernate:
@@ -14,15 +14,16 @@ spring:
   datasource:
     platform: postgres
     url: jdbc:postgresql://localhost:5432/ostock
-    username: user
-    password: pass
-    testWhileIdle: true
-    validationQuery: SELECT 1
-  database.driverClassName: org.postgresql.Driver
+    username: '{cipher}dead2af73ed7cb9b92c5a1a5e34069184dfcaf65bcfae8975787afa276e552da'
+    password: '{cipher}9375660b03c7e41ea761fc6e1303976c5fe8ae842ee009b2e563d4c632161b88'
+    test-while-idle: true
+    validation-query: SELECT 1
+  database:
+    driverClassName: org.postgresql.Driver
 
 management:
   endpoints:
     web:
       exposure:
-        include: "*"
+        include: '*'
     enabled-by-default: true

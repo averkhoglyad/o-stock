@@ -2,7 +2,9 @@ spring:
   application:
     name: config-server
   profiles:
-    active: git, native
+    active:
+      - git
+      - native
   cloud:
     config:
       server:
@@ -13,12 +15,18 @@ spring:
           default-label: master
           search-paths: configs
           force-pull: true
-          order: 0
+          order: 1
         native:
           search-locations: classpath:/conf
-          order: 1
+          order: 2
+        encrypt:
+          enabled: true
+
 server:
   port: 9999
+
+encrypt:
+  key: "foM}kcGHmxB7[C9:"
 
 management:
   endpoints:
