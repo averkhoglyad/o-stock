@@ -2,12 +2,21 @@ spring:
   application:
     name: config-server
   profiles:
-    active: native
+    active: git, native
   cloud:
     config:
       server:
+        git:
+          uri: https://github.com/averkhoglyad/o-stock-configs.git
+          username: averkhoglyad
+          password: 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
+          default-label: master
+          search-paths: configs
+          force-pull: true
+          order: 0
         native:
           search-locations: classpath:/conf
+          order: 1
 server:
   port: 9999
 
