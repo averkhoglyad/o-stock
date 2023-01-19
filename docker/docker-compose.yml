@@ -31,7 +31,7 @@ services:
           - "configs"
 
   licensing:
-    image: ostock/license:1.0-SNAPSHOT
+    image: ostock/licensing-service:1.0-SNAPSHOT
     ports:
       - "8080:8080"
     command: "--spring.config.import=configserver:http://configs:9999"
@@ -43,9 +43,22 @@ services:
       configs:
         condition: service_started
     networks:
-      backend:
-        aliases:
-          - "licenseservice"
+      - backend
+
+  organization:
+    image: ostock/organization-service:1.0-SNAPSHOT
+    ports:
+      - "8090:8090"
+    command: "--spring.config.import=configserver:http://configs:9999"
+    environment:
+      - "SPRING_PROFILES_ACTIVE=dev"
+    depends_on:
+      database:
+        condition: service_healthy
+      configserver:
+        condition: service_started
+    networks:
+      - backend
 
 networks:
   backend:
