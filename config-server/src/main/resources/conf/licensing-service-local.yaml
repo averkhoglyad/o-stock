@@ -1,6 +1,9 @@
 example:
   property: I AM LOCAL
 
+server:
+  port: 8080
+
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/ostock
