@@ -1,12 +1,11 @@
-package io.verkhoglyad.ostock.license.repository;
+package io.verkhoglyad.ostock.licensing.repository;
 
-import io.verkhoglyad.ostock.license.model.License;
+import io.verkhoglyad.ostock.licensing.model.License;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
 public interface LicenseRepository extends CrudRepository<License, String> {
 
     List<License> findByOrganizationId(String organizationId);

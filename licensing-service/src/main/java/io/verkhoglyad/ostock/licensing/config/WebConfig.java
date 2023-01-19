@@ -1,22 +1,15 @@
-package io.verkhoglyad.ostock.license;
+package io.verkhoglyad.ostock.licensing.config;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 import java.util.Locale;
 
-@SpringBootApplication
-@RefreshScope
-public class LicenseApplication {
-
-    public static void main(String[] args) {
-        SpringApplication.run(LicenseApplication.class, args);
-    }
+@Configuration
+public class WebConfig {
 
     @Bean
     public LocaleResolver localeResolver() {
@@ -32,4 +25,5 @@ public class LicenseApplication {
         messageSource.setBasenames("messages");
         return messageSource;
     }
+
 }

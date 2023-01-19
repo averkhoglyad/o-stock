@@ -1,9 +1,9 @@
-package io.verkhoglyad.ostock.license.service;
+package io.verkhoglyad.ostock.licensing.service;
 
-import io.verkhoglyad.ostock.license.config.ServiceConfig;
-import io.verkhoglyad.ostock.license.model.License;
-import io.verkhoglyad.ostock.license.model.Message;
-import io.verkhoglyad.ostock.license.repository.LicenseRepository;
+import io.verkhoglyad.ostock.licensing.config.ServiceConfig;
+import io.verkhoglyad.ostock.licensing.model.License;
+import io.verkhoglyad.ostock.licensing.model.Message;
+import io.verkhoglyad.ostock.licensing.repository.LicenseRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;

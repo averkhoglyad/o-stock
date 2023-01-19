@@ -1,4 +1,4 @@
-package io.verkhoglyad.ostock.license.model;
+package io.verkhoglyad.ostock.licensing.model;
 
 import lombok.Getter;
 import lombok.Setter;

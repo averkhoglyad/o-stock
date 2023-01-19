@@ -1,7 +1,7 @@
-package io.verkhoglyad.ostock.license.controller;
+package io.verkhoglyad.ostock.licensing.controller;
 
-import io.verkhoglyad.ostock.license.model.License;
-import io.verkhoglyad.ostock.license.service.LicenseService;
+import io.verkhoglyad.ostock.licensing.model.License;
+import io.verkhoglyad.ostock.licensing.service.LicenseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.hateoas.RepresentationModel;
