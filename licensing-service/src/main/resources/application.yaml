@@ -1,7 +1,5 @@
 spring:
   application:
     name: licensing-service
-  profiles:
-    active: dev
   jpa:
     open-in-view: false

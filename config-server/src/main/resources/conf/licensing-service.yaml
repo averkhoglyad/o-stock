@@ -13,9 +13,6 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
   datasource:
     platform: postgres
-    url: jdbc:postgresql://localhost:5432/ostock
-    username: '{cipher}dead2af73ed7cb9b92c5a1a5e34069184dfcaf65bcfae8975787afa276e552da'
-    password: '{cipher}9375660b03c7e41ea761fc6e1303976c5fe8ae842ee009b2e563d4c632161b88'
     test-while-idle: true
     validation-query: SELECT 1
   database:
