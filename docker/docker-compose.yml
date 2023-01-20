@@ -21,26 +21,47 @@ services:
       timeout: 5s
       retries: 5
 
-  configs:
+  config-server:
     image: ostock/config-server:1.0-SNAPSHOT
     ports:
       - "9999:9999"
+    environment:
+      SPRING_CLOUD_CONFIG_SERVER_GIT_USERNAME: user
+      SPRING_CLOUD_CONFIG_SERVER_GIT_PASSWORD: pass
     networks:
       backend:
         aliases:
-          - "configs"
+          - "config-server"
+
+  discovery-server:
+    image: ostock/discovery-server:1.0-SNAPSHOT
+    ports:
+      - "8000:8000"
+    command: "--spring.config.import=configserver:http://config-server:9999"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+    restart: on-failure
+    depends_on:
+      config-server:
+        condition: service_started
+    networks:
+      backend:
+        aliases:
+          - "discovery-server"
 
   licensing:
     image: ostock/licensing-service:1.0-SNAPSHOT
     ports:
       - "8080:8080"
-    command: "--spring.config.import=configserver:http://configs:9999"
+    command: "--spring.config.import=configserver:http://config-server:9999"
     environment:
-      - "SPRING_PROFILES_ACTIVE=dev"
+      SPRING_PROFILES_ACTIVE: dev
     depends_on:
       database:
         condition: service_healthy
-      configs:
+      config-server:
+        condition: service_started
+      discovery-server:
         condition: service_started
     networks:
       - backend
@@ -49,13 +70,15 @@ services:
     image: ostock/organization-service:1.0-SNAPSHOT
     ports:
       - "8090:8090"
-    command: "--spring.config.import=configserver:http://configs:9999"
+    command: "--spring.config.import=configserver:http://config-server:9999"
     environment:
-      - "SPRING_PROFILES_ACTIVE=dev"
+      SPRING_PROFILES_ACTIVE: dev
     depends_on:
       database:
         condition: service_healthy
-      configserver:
+      config-server:
+        condition: service_started
+      discovery-server:
         condition: service_started
     networks:
       - backend
