@@ -7,6 +7,7 @@ import io.verkhoglyad.ostock.licensing.model.Organization;
 import io.verkhoglyad.ostock.licensing.repository.LicenseRepository;
 import io.verkhoglyad.ostock.licensing.service.client.DiscoveryClientAwareOrganizationClient;
 import io.verkhoglyad.ostock.licensing.service.client.FeignOrganizationClient;
+import io.verkhoglyad.ostock.licensing.service.client.OrganizationClient;
 import io.verkhoglyad.ostock.licensing.service.client.RestTemplateOrganizationClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
@@ -22,17 +23,13 @@ public class LicenseService {
     private final LicenseRepository licenseRepository;
     private final MessageSource messages;
     private final ServiceConfig config;
-
-    private final FeignOrganizationClient organizationFeignClient;
-    private final RestTemplateOrganizationClient organizationRestClient;
-    private final DiscoveryClientAwareOrganizationClient organizationDiscoveryClient;
-
+    private final OrganizationClient organizationClient;
 
     public List<License> getLicensesByOrganization(String organizationId) {
         return licenseRepository.findByOrganizationId(organizationId);
     }
 
-    public License getLicense(String organizationId, String licenseId, String clientType) {
+    public License getLicense(String organizationId, String licenseId) {
         var license = licenseRepository
                 .findByOrganizationIdAndLicenseId(organizationId, licenseId);
         if (null == license) {
@@ -42,7 +39,7 @@ public class LicenseService {
             );
         }
 
-        Organization organization = retrieveOrganizationInfo(organizationId, clientType);
+        Organization organization = organizationClient.loadOrganization(organizationId);
         if (null != organization) {
             license.setOrganizationName(organization.getName());
             license.setContactName(organization.getContactName());
@@ -51,24 +48,6 @@ public class LicenseService {
         }
 
         return license.withComment(config.getProperty());
-    }
-
-    private Organization retrieveOrganizationInfo(String organizationId, String clientType) {
-        return switch (clientType) {
-            case "feign" -> {
-                System.out.println("I am using the feign client");
-                yield organizationFeignClient.loadOrganization(organizationId);
-            }
-            case "rest" -> {
-                System.out.println("I am using the rest client");
-                yield organizationRestClient.loadOrganization(organizationId);
-            }
-            case "discovery" -> {
-                System.out.println("I am using the discovery client");
-                yield organizationDiscoveryClient.loadOrganization(organizationId);
-            }
-            default -> organizationRestClient.loadOrganization(organizationId);
-        };
     }
 
     public License createLicense(License license) {

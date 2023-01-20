@@ -5,18 +5,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-@Component
 @RequiredArgsConstructor
 public class DiscoveryClientAwareOrganizationClient implements OrganizationClient {
 
     private final DiscoveryClient discoveryClient;
-    // NOTE:
-    // New instance WITHOUT configured Load Balancer
-    // RestTemplate in the Spring scope used Load Balancer because it's enabled with @EnableDiscoveryClient
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final RestTemplate restTemplate;
 
     @Override
     public Organization loadOrganization(String organizationId) {

@@ -3,3 +3,6 @@ spring:
     name: licensing-service
   jpa:
     open-in-view: false
+
+application:
+  organization-client-type: discovery

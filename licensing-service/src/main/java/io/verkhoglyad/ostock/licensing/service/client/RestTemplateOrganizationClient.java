@@ -4,10 +4,8 @@ import io.verkhoglyad.ostock.licensing.model.Organization;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-@Component
 @RequiredArgsConstructor
 public class RestTemplateOrganizationClient implements OrganizationClient {
 
