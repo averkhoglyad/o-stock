@@ -1,10 +1,14 @@
 package io.verkhoglyad.ostock.licensing.controller;
 
+import io.verkhoglyad.ostock.licensing.data.Message;
 import io.verkhoglyad.ostock.licensing.model.License;
 import io.verkhoglyad.ostock.licensing.service.LicenseService;
+import io.verkhoglyad.ostock.licensing.util.MessageConverter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.RepresentationModel;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +24,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class LicenseController {
 
     private final LicenseService service;
-    private final MessageSource messageSource;
+    private final MessageConverter messageSource;
 
     @RequestMapping(value="/",method = RequestMethod.GET)
     public List<License> getLicenses(@PathVariable("organizationId") String organizationId) {
@@ -28,39 +32,43 @@ public class LicenseController {
     }
 
     @GetMapping("/{licenseId}")
-    public ResponseEntity<RepresentationModel<?>> getLicense(@PathVariable("organizationId") String organizationId,
+    public EntityModel<License> getLicense(@PathVariable("organizationId") String organizationId,
                                                              @PathVariable("licenseId") String licenseId) {
         var license = service.getLicense(organizationId, licenseId);
-        RepresentationModel<?> representationModel = RepresentationModel.of(license);
-        representationModel.add(linkTo(methodOn(LicenseController.class)
-                        .getLicense(organizationId, license.getLicenseId()))
-                        .withSelfRel(),
-                linkTo(methodOn(LicenseController.class)
-                        .createLicense(license))
-                        .withRel("create"),
-                linkTo(methodOn(LicenseController.class)
-                        .updateLicense(license))
-                        .withRel("update"),
-                linkTo(methodOn(LicenseController.class)
-                        .deleteLicense(license.getLicenseId(), null))
-                        .withRel("delete"));
-        return ResponseEntity.ok(representationModel);
+        return licenseToRepresentationModel(license);
     }
 
     @PostMapping
-    public ResponseEntity<License> createLicense(@RequestBody License license) {
-        return ResponseEntity.ok(service.createLicense(license));
+    @ResponseStatus(HttpStatus.CREATED)
+    public EntityModel<License> createLicense(@RequestBody License license) {
+        return licenseToRepresentationModel(service.createLicense(license));
     }
 
     @PutMapping
-    public ResponseEntity<License> updateLicense(@RequestBody License license) {
-        return ResponseEntity.ok(service.updateLicense(license));
+    public EntityModel<License> updateLicense(@RequestBody License license) {
+        return licenseToRepresentationModel(service.updateLicense(license));
     }
 
     @DeleteMapping("/{licenseId}")
-    public ResponseEntity<String> deleteLicense(@PathVariable("licenseId") String licenseId,
+    public String deleteLicense(@PathVariable("licenseId") String licenseId,
                                                 @RequestHeader(name = "Accept-Language", required = false) Locale locale) {
-        var message = service.deleteLicense(licenseId);
-        return ResponseEntity.ok(messageSource.getMessage(message.message(), message.args(), locale));
+        service.deleteLicense(licenseId);
+        return messageSource.message(new Message("license.delete.message", licenseId), locale);
+    }
+
+    private EntityModel<License> licenseToRepresentationModel(License license) {
+        return EntityModel.of(license)
+                .add(linkTo(methodOn(LicenseController.class)
+                                .getLicense(license.getOrganizationId(), license.getLicenseId()))
+                                .withSelfRel(),
+                        linkTo(methodOn(LicenseController.class)
+                                .createLicense(license))
+                                .withRel("create"),
+                        linkTo(methodOn(LicenseController.class)
+                                .updateLicense(license))
+                                .withRel("update"),
+                        linkTo(methodOn(LicenseController.class)
+                                .deleteLicense(license.getLicenseId(), null))
+                                .withRel("delete"));
     }
 }

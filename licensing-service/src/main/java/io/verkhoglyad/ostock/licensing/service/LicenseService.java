@@ -1,14 +1,11 @@
 package io.verkhoglyad.ostock.licensing.service;
 
 import io.verkhoglyad.ostock.licensing.config.ServiceConfig;
+import io.verkhoglyad.ostock.licensing.exception.AppException;
 import io.verkhoglyad.ostock.licensing.model.License;
-import io.verkhoglyad.ostock.licensing.model.Message;
-import io.verkhoglyad.ostock.licensing.model.Organization;
+import io.verkhoglyad.ostock.licensing.data.Message;
 import io.verkhoglyad.ostock.licensing.repository.LicenseRepository;
-import io.verkhoglyad.ostock.licensing.service.client.DiscoveryClientAwareOrganizationClient;
-import io.verkhoglyad.ostock.licensing.service.client.FeignOrganizationClient;
 import io.verkhoglyad.ostock.licensing.service.client.OrganizationClient;
-import io.verkhoglyad.ostock.licensing.service.client.RestTemplateOrganizationClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
@@ -31,13 +28,8 @@ public class LicenseService {
 
     public License getLicense(String organizationId, String licenseId) {
         var license = licenseRepository
-                .findByOrganizationIdAndLicenseId(organizationId, licenseId);
-        if (null == license) {
-            throw new IllegalArgumentException(
-                    String.format(messages.getMessage("license.search.error.message", null, null),
-                            licenseId, organizationId)
-            );
-        }
+                .findByOrganizationIdAndLicenseId(organizationId, licenseId)
+                .orElseThrow(() -> new AppException("license.search.error.message", licenseId, organizationId));
 
         organizationClient.loadOrganization(organizationId)
                 .ifPresent(organization -> {
@@ -61,10 +53,7 @@ public class LicenseService {
         return license.withComment(config.getProperty());
     }
 
-    public Message deleteLicense(String licenseId) {
-        var license = new License();
-        license.setLicenseId(licenseId);
-        licenseRepository.delete(license);
-        return new Message("license.delete.message", licenseId);
+    public void deleteLicense(String licenseId) {
+        licenseRepository.deleteById(licenseId);
     }
 }
