@@ -29,7 +29,7 @@ public class DiscoveryClientAwareOrganizationClient implements OrganizationClien
 
     private URI buildEndpointUri(String organizationId, ServiceInstance service) {
         return UriComponentsBuilder.fromUri(service.getUri())
-                .pathSegment(ENDPOINT_PATH)
+                .path(ENDPOINT_PATH)
                 .build()
                 .expand(organizationId)
                 .toUri();
