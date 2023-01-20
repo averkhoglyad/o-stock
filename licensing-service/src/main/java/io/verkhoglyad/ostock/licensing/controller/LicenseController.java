@@ -8,6 +8,7 @@ import org.springframework.hateoas.RepresentationModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Locale;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -21,10 +22,15 @@ public class LicenseController {
     private final LicenseService service;
     private final MessageSource messageSource;
 
+    @RequestMapping(value="/",method = RequestMethod.GET)
+    public List<License> getLicenses(@PathVariable("organizationId") String organizationId) {
+        return service.getLicensesByOrganization(organizationId);
+    }
+
     @GetMapping("/{licenseId}")
     public ResponseEntity<RepresentationModel<?>> getLicense(@PathVariable("organizationId") String organizationId,
                                                              @PathVariable("licenseId") String licenseId) {
-        var license = service.getLicense(licenseId, organizationId);
+        var license = service.getLicense(organizationId, licenseId, "");
         RepresentationModel<?> representationModel = RepresentationModel.of(license);
         representationModel.add(linkTo(methodOn(LicenseController.class)
                         .getLicense(organizationId, license.getLicenseId()))
@@ -39,6 +45,13 @@ public class LicenseController {
                         .deleteLicense(license.getLicenseId(), null))
                         .withRel("delete"));
         return ResponseEntity.ok(representationModel);
+    }
+
+    @GetMapping("/{licenseId}/{clientType}")
+    public License getLicensesWithClient(@PathVariable("organizationId") String organizationId,
+                                         @PathVariable("licenseId") String licenseId,
+                                         @PathVariable("clientType") String clientType) {
+        return service.getLicense(organizationId, licenseId, clientType);
     }
 
     @PostMapping
