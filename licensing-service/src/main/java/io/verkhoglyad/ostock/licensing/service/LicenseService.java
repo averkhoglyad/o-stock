@@ -39,13 +39,13 @@ public class LicenseService {
             );
         }
 
-        Organization organization = organizationClient.loadOrganization(organizationId);
-        if (null != organization) {
-            license.setOrganizationName(organization.getName());
-            license.setContactName(organization.getContactName());
-            license.setContactEmail(organization.getContactEmail());
-            license.setContactPhone(organization.getContactPhone());
-        }
+        organizationClient.loadOrganization(organizationId)
+                .ifPresent(organization -> {
+                    license.setOrganizationName(organization.getName());
+                    license.setContactName(organization.getContactName());
+                    license.setContactEmail(organization.getContactEmail());
+                    license.setContactPhone(organization.getContactPhone());
+                });
 
         return license.withComment(config.getProperty());
     }

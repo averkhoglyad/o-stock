@@ -3,6 +3,10 @@ package io.verkhoglyad.ostock.licensing.config;
 import io.verkhoglyad.ostock.licensing.service.client.DiscoveryClientAwareOrganizationClient;
 import io.verkhoglyad.ostock.licensing.service.client.OrganizationClient;
 import io.verkhoglyad.ostock.licensing.service.client.RestTemplateOrganizationClient;
+import io.verkhoglyad.ostock.licensing.service.client.discovery.ProviderStrategy;
+import io.verkhoglyad.ostock.licensing.service.client.discovery.RoundRobinStrategy;
+import io.verkhoglyad.ostock.licensing.service.client.discovery.ServiceInstanceProvider;
+import io.verkhoglyad.ostock.licensing.service.client.discovery.ServiceInstanceProviderImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -64,7 +68,15 @@ public class OrganizationClientConfig {
 
         @Bean
         public OrganizationClient organizationClient(DiscoveryClient discoveryClient) {
-            return new DiscoveryClientAwareOrganizationClient(discoveryClient, getRestTemplate());
+            return new DiscoveryClientAwareOrganizationClient(serviceInstanceProvider("organization-service", discoveryClient), getRestTemplate());
+        }
+
+        private ServiceInstanceProvider serviceInstanceProvider(String name, DiscoveryClient discoveryClient) {
+            return new ServiceInstanceProviderImpl(name, discoveryClient, providerStrategy());
+        }
+
+        private ProviderStrategy providerStrategy() {
+            return new RoundRobinStrategy();
         }
     }
 }

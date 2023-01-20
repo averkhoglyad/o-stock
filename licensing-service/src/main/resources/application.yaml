@@ -5,4 +5,4 @@ spring:
     open-in-view: false
 
 application:
-  organization-client-type: discovery
+  organization-client-type: discovery #rest / feign / discovery
