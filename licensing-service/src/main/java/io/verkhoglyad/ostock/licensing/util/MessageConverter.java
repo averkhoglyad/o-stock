@@ -22,7 +22,6 @@ public class MessageConverter {
         return messageSource.getMessage(message.message(), message.args(), locale);
     }
 
-    @Nullable
     public String message(String code) {
         return messageSource.getMessage(code, null, null, null);
     }

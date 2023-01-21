@@ -15,9 +15,9 @@ import java.util.Locale;
 @RequiredArgsConstructor
 public class ExceptionController {
 
-    private final MessageConverter messageConverter;
-
     private final Logger logger = LoggerFactory.getLogger(getClass());
+
+    private final MessageConverter messageConverter;
 
     @ExceptionHandler
     public String exceptionHandle(AppException exception, @RequestHeader(name = "Accept-Language", required = false) Locale locale) {
