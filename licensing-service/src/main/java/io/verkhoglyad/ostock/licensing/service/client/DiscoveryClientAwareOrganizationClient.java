@@ -2,7 +2,10 @@ package io.verkhoglyad.ostock.licensing.service.client;
 
 import io.verkhoglyad.ostock.licensing.model.Organization;
 import io.verkhoglyad.ostock.licensing.service.client.discovery.ServiceInstanceProvider;
+import io.verkhoglyad.ostock.licensing.util.Functions;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.http.HttpEntity;
 import org.springframework.web.client.RestTemplate;
@@ -16,6 +19,8 @@ public class DiscoveryClientAwareOrganizationClient implements OrganizationClien
 
     private static final String ENDPOINT_PATH = "/v1/organization/{organizationId}";
 
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+
     private final ServiceInstanceProvider serviceProvider;
     private final RestTemplate restTemplate;
 
@@ -23,6 +28,7 @@ public class DiscoveryClientAwareOrganizationClient implements OrganizationClien
     public Optional<Organization> loadOrganization(String organizationId) {
         return serviceProvider.provide()
                 .map(service -> buildEndpointUri(organizationId, service))
+                .map(Functions.peek(it -> logger.info("Requested URL: {}", it)))
                 .map(uri -> restTemplate.getForEntity(uri, Organization.class))
                 .map(HttpEntity::getBody);
     }

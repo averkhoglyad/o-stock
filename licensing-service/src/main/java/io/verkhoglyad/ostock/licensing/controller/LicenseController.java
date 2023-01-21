@@ -33,27 +33,30 @@ public class LicenseController {
 
     @GetMapping("/{licenseId}")
     public EntityModel<License> getLicense(@PathVariable("organizationId") String organizationId,
-                                                             @PathVariable("licenseId") String licenseId) {
+                                           @PathVariable("licenseId") String licenseId) {
         var license = service.getLicense(organizationId, licenseId);
         return licenseToRepresentationModel(license);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public EntityModel<License> createLicense(@RequestBody License license) {
+    public EntityModel<License> createLicense(@PathVariable("organizationId") String organizationId,
+                                              @RequestBody License license) {
         return licenseToRepresentationModel(service.createLicense(license));
     }
 
     @PutMapping
-    public EntityModel<License> updateLicense(@RequestBody License license) {
+    public EntityModel<License> updateLicense(@PathVariable("organizationId") String organizationId,
+                                              @RequestBody License license) {
         return licenseToRepresentationModel(service.updateLicense(license));
     }
 
     @DeleteMapping("/{licenseId}")
-    public String deleteLicense(@PathVariable("licenseId") String licenseId,
-                                                @RequestHeader(name = "Accept-Language", required = false) Locale locale) {
+    public ResponseEntity<String> deleteLicense(@PathVariable("organizationId") String organizationId,
+                                @PathVariable("licenseId") String licenseId,
+                                @RequestHeader(name = "Accept-Language", required = false) Locale locale) {
         service.deleteLicense(licenseId);
-        return messageSource.message(new Message("license.delete.message", licenseId), locale);
+        return ResponseEntity.ok(messageSource.message(new Message("license.delete.message", licenseId), locale));
     }
 
     private EntityModel<License> licenseToRepresentationModel(License license) {
@@ -62,13 +65,13 @@ public class LicenseController {
                                 .getLicense(license.getOrganizationId(), license.getLicenseId()))
                                 .withSelfRel(),
                         linkTo(methodOn(LicenseController.class)
-                                .createLicense(license))
+                                .createLicense(license.getOrganizationId(), license))
                                 .withRel("create"),
                         linkTo(methodOn(LicenseController.class)
-                                .updateLicense(license))
+                                .updateLicense(license.getOrganizationId(), license))
                                 .withRel("update"),
                         linkTo(methodOn(LicenseController.class)
-                                .deleteLicense(license.getLicenseId(), null))
+                                .deleteLicense(license.getOrganizationId(), license.getLicenseId(), null))
                                 .withRel("delete"));
     }
 }
