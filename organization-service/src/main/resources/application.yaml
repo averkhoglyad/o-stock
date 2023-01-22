@@ -3,3 +3,7 @@ spring:
     name: organization-service
   jpa:
     open-in-view: false
+
+logging:
+  level:
+    io.averkhoglyad.ostock: DEBUG
