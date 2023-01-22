@@ -24,7 +24,7 @@ public class OrganizationClientConfig {
     private static final Logger LOGGER = LoggerFactory.getLogger(OrganizationClientConfig.class);
 
     @Configuration
-    @EnableFeignClients("io.verkhoglyad.ostock.licensing")
+    @EnableFeignClients("io.averkhoglyad.ostock.licensing")
     @ConditionalOnProperty(name = "application.organization-client-type", havingValue = "feign")
     static class FeignClientConfig {
         @PostConstruct
