@@ -7,6 +7,7 @@ import io.averkhoglyad.ostock.licensing.service.client.discovery.ServiceInstance
 import io.averkhoglyad.ostock.licensing.service.client.RestTemplateOrganizationClient;
 import io.averkhoglyad.ostock.licensing.service.client.discovery.RoundRobinStrategy;
 import io.averkhoglyad.ostock.licensing.service.client.discovery.ServiceInstanceProvider;
+import io.averkhoglyad.ostock.licensing.util.usercontext.UserContextInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -15,9 +16,12 @@ import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
+import java.util.ArrayList;
+import java.util.List;
 
 public class OrganizationClientConfig {
 
@@ -44,7 +48,7 @@ public class OrganizationClientConfig {
         @Bean
         @LoadBalanced
         public RestTemplate getRestTemplate() {
-            return new RestTemplate();
+            return createRestTemplate();
         }
 
         @Bean
@@ -63,7 +67,7 @@ public class OrganizationClientConfig {
 
         @Bean
         public RestTemplate getRestTemplate() {
-            return new RestTemplate();
+            return createRestTemplate();
         }
 
         @Bean
@@ -78,5 +82,16 @@ public class OrganizationClientConfig {
         private ProviderStrategy providerStrategy() {
             return new RoundRobinStrategy();
         }
+    }
+
+    private static RestTemplate createRestTemplate() {
+        var restTemplate = new RestTemplate();
+        var interceptors = restTemplate.getInterceptors();
+        if (interceptors == null) {
+            interceptors = new ArrayList<>();
+            restTemplate.setInterceptors(interceptors);
+        }
+        interceptors.add(new UserContextInterceptor());
+        return restTemplate;
     }
 }

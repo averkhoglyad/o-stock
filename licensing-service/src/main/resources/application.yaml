@@ -4,8 +4,12 @@ spring:
   jpa:
     open-in-view: false
 
+logging:
+  level:
+    io.averkhoglyad.ostock: DEBUG
+
 application:
-  organization-client-type: discovery #rest / feign / discovery
+  organization-client-type: rest #rest / feign / discovery
 
 resilience4j:
   circuitbreaker:
