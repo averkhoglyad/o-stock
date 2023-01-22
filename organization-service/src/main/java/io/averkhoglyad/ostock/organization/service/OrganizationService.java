@@ -1,7 +1,7 @@
-package io.verkhoglyad.ostock.organization.service;
+package io.averkhoglyad.ostock.organization.service;
 
-import io.verkhoglyad.ostock.organization.model.Organization;
-import io.verkhoglyad.ostock.organization.repository.OrganizationRepository;
+import io.averkhoglyad.ostock.organization.model.Organization;
+import io.averkhoglyad.ostock.organization.repository.OrganizationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

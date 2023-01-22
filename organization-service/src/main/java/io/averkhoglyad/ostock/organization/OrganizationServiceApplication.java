@@ -1,4 +1,4 @@
-package io.verkhoglyad.ostock.organization;
+package io.averkhoglyad.ostock.organization;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

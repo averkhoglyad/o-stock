@@ -1,4 +1,4 @@
-package io.verkhoglyad.ostock.organization.model;
+package io.averkhoglyad.ostock.organization.model;
 
 import lombok.Getter;
 import lombok.Setter;

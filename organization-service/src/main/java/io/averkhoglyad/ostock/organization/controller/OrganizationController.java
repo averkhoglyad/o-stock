@@ -1,7 +1,7 @@
-package io.verkhoglyad.ostock.organization.controller;
+package io.averkhoglyad.ostock.organization.controller;
 
-import io.verkhoglyad.ostock.organization.model.Organization;
-import io.verkhoglyad.ostock.organization.service.OrganizationService;
+import io.averkhoglyad.ostock.organization.model.Organization;
+import io.averkhoglyad.ostock.organization.service.OrganizationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
