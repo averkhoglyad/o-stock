@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: gateway-server
+
+logging:
+  level:
+    io.averkhoglyad.ostock: DEBUG

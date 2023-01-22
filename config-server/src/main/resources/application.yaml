@@ -19,6 +19,8 @@ spring:
           order: 2
         encrypt:
           enabled: true
+    refresh:
+      enabled: true
 
 server:
   port: 9999

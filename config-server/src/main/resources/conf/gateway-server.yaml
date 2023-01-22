@@ -1,0 +1,38 @@
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+#      routes:
+#        - id: licensing-service
+#          uri: lb://licensing-service
+#          predicates:
+#            - Path=/licensing/**
+#          filters:
+#            - RewritePath=/licensing/(?<path>.*), /$\{path}
+#        - id: organization-service
+#          uri: lb://organization-service
+#          predicates:
+#            - Path=/organization/**
+#          filters:
+#            - RewritePath=/organization/(?<path>.*), /$\{path}
+
+server:
+  port: 80
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8000/eureka/
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
