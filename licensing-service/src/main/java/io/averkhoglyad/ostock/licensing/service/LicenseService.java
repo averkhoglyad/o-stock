@@ -31,7 +31,7 @@ public class LicenseService {
 
     @CircuitBreaker(name = "licenseService", fallbackMethod = "getLicensesByOrganizationFallback")
     @Retry(name = "retryLicenseService", fallbackMethod="getLicensesByOrganizationFallback")
-    @Bulkhead(name= "bulkheadLicenseService", type = Bulkhead.Type.THREADPOOL, fallbackMethod= "getLicensesByOrganizationFallback")
+    @Bulkhead(name= "bulkheadLicenseService", fallbackMethod= "getLicensesByOrganizationFallback")
     @RateLimiter(name = "licenseService", fallbackMethod = "getLicensesByOrganizationFallback")
     public List<License> getLicensesByOrganization(String organizationId) throws TimeoutException {
         randomlyRunLong();
@@ -56,6 +56,7 @@ public class LicenseService {
     }
 
     public List<License> getLicensesByOrganizationFallback(String organizationId, Throwable e) {
+        logger.error("LicenseService.getLicensesByOrganization error", e);
         var license = new License();
         license.setLicenseId("0000000-00-00000");
         license.setOrganizationId(organizationId);
