@@ -1,4 +1,4 @@
-package io.averkhoglyad.ostock.organization.util.usercontext;
+package io.averkhoglyad.ostock.common.context;
 
 import org.springframework.util.Assert;
 

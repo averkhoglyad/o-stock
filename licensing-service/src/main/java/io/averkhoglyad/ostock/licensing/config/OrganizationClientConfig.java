@@ -1,13 +1,13 @@
 package io.averkhoglyad.ostock.licensing.config;
 
+import io.averkhoglyad.ostock.common.context.UserContextInterceptor;
 import io.averkhoglyad.ostock.licensing.service.client.DiscoveryClientAwareOrganizationClient;
 import io.averkhoglyad.ostock.licensing.service.client.OrganizationClient;
-import io.averkhoglyad.ostock.licensing.service.client.discovery.ProviderStrategy;
-import io.averkhoglyad.ostock.licensing.service.client.discovery.ServiceInstanceProviderImpl;
 import io.averkhoglyad.ostock.licensing.service.client.RestTemplateOrganizationClient;
+import io.averkhoglyad.ostock.licensing.service.client.discovery.ProviderStrategy;
 import io.averkhoglyad.ostock.licensing.service.client.discovery.RoundRobinStrategy;
 import io.averkhoglyad.ostock.licensing.service.client.discovery.ServiceInstanceProvider;
-import io.averkhoglyad.ostock.licensing.util.usercontext.UserContextInterceptor;
+import io.averkhoglyad.ostock.licensing.service.client.discovery.ServiceInstanceProviderImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -16,12 +16,10 @@ import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
-import java.util.List;
 
 public class OrganizationClientConfig {
 

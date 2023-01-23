@@ -1,4 +1,4 @@
-package io.averkhoglyad.ostock.organization.util.usercontext;
+package io.averkhoglyad.ostock.common.context;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,8 +18,8 @@ public class UserContextInterceptor implements ClientHttpRequestInterceptor {
     public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
         HttpHeaders headers = request.getHeaders();
         UserContext context = UserContextHolder.getContext();
-        headers.add(UserContext.TRACKING_ID, context.getTrackingId());
-        headers.add(UserContext.AUTH_TOKEN, context.getAuthToken());
+        headers.add(Headers.TRACKING_ID, context.getTrackingId());
+        headers.add(Headers.AUTH_TOKEN, context.getAuthToken());
         return execution.execute(request, body);
     }
 }
