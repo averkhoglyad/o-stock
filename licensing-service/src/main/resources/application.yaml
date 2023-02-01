@@ -8,6 +8,16 @@ logging:
   level:
     io.averkhoglyad.ostock: DEBUG
 
+keycloak:
+  realm: ostock-realm
+  auth-server-url: http://localhost:9090/auth
+  ssl-required: external
+  resource: ostock
+  credentials:
+    secret: c3ILalPuUs1KXsOUu0V5zpUIjY6b3QrW
+  use-resource-role-mappings: true
+  bearer-only: true
+
 application:
   organization-client-type: rest #rest / feign / discovery
 

@@ -8,8 +8,11 @@ import io.averkhoglyad.ostock.licensing.service.client.discovery.ProviderStrateg
 import io.averkhoglyad.ostock.licensing.service.client.discovery.RoundRobinStrategy;
 import io.averkhoglyad.ostock.licensing.service.client.discovery.ServiceInstanceProvider;
 import io.averkhoglyad.ostock.licensing.service.client.discovery.ServiceInstanceProviderImpl;
+import org.keycloak.adapters.springsecurity.client.KeycloakClientRequestFactory;
+import org.keycloak.adapters.springsecurity.client.KeycloakRestTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
@@ -21,6 +24,7 @@ import org.springframework.web.client.RestTemplate;
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 
+@Configuration
 public class OrganizationClientConfig {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OrganizationClientConfig.class);
@@ -38,6 +42,10 @@ public class OrganizationClientConfig {
     @Configuration
     @ConditionalOnProperty(name = "application.organization-client-type", havingValue = "rest")
     static class RestClientConfig {
+
+        @Autowired
+        KeycloakClientRequestFactory keycloakClientRequestFactory;
+
         @PostConstruct
         void init() {
             LOGGER.info("Using the rest client");
@@ -46,7 +54,7 @@ public class OrganizationClientConfig {
         @Bean
         @LoadBalanced
         public RestTemplate getRestTemplate() {
-            return createRestTemplate();
+            return createRestTemplate(keycloakClientRequestFactory);
         }
 
         @Bean
@@ -58,6 +66,10 @@ public class OrganizationClientConfig {
     @Configuration
     @ConditionalOnProperty(name = "application.organization-client-type", havingValue = "discovery")
     static class DiscoveryClientConfig {
+
+        @Autowired
+        KeycloakClientRequestFactory keycloakClientRequestFactory;
+
         @PostConstruct
         void init() {
             LOGGER.info("Using the discovery client");
@@ -65,7 +77,7 @@ public class OrganizationClientConfig {
 
         @Bean
         public RestTemplate getRestTemplate() {
-            return createRestTemplate();
+            return createRestTemplate(keycloakClientRequestFactory);
         }
 
         @Bean
@@ -82,8 +94,9 @@ public class OrganizationClientConfig {
         }
     }
 
-    private static RestTemplate createRestTemplate() {
-        var restTemplate = new RestTemplate();
+    private static RestTemplate createRestTemplate(KeycloakClientRequestFactory keycloakClientRequestFactory) {
+//        var restTemplate = new KeycloakRestTemplate(keycloakClientRequestFactory);
+        var restTemplate = new RestTemplate(keycloakClientRequestFactory);
         var interceptors = restTemplate.getInterceptors();
         if (interceptors == null) {
             interceptors = new ArrayList<>();

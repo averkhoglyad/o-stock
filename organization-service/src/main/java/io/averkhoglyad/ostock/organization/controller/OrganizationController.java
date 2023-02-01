@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
+
 @RestController
 @RequestMapping("v1/organization")
 @RequiredArgsConstructor
@@ -14,6 +16,7 @@ public class OrganizationController {
     private final OrganizationService service;
 
     @GetMapping("/{organizationId}")
+    @RolesAllowed("ADMIN")
     public Organization details(@PathVariable("organizationId") String organizationId) {
         return service.findById(organizationId);
     }

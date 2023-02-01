@@ -22,9 +22,10 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <docker.image.prefix>ostock</docker.image.prefix>
         <spring-boot.version>2.7.8</spring-boot.version>
         <spring-cloud.version>2021.0.5</spring-cloud.version>
-        <docker.image.prefix>ostock</docker.image.prefix>
+        <keycloak-adapter.version>20.0.3</keycloak-adapter.version>
     </properties>
 
     <dependencyManagement>
@@ -40,6 +41,13 @@
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
                 <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.keycloak.bom</groupId>
+                <artifactId>keycloak-adapter-bom</artifactId>
+                <version>${keycloak-adapter.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
