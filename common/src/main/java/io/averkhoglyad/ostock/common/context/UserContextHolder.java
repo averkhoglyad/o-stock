@@ -6,6 +6,9 @@ public class UserContextHolder {
 
     private static final ThreadLocal<UserContext> userContext = new ThreadLocal<>();
 
+    private UserContextHolder() {
+    }
+
     public static final UserContext getContext() {
         UserContext context = userContext.get();
 

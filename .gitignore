@@ -40,3 +40,4 @@ build/
 
 /rest-api.http
 /_etc/
+/data/
