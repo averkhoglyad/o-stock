@@ -27,7 +27,7 @@ public class LicenseService {
 
     private final LicenseRepository licenseRepository;
     private final ServiceConfig config;
-    private final OrganizationClient organizationClient;
+    private final OrganizationService organizationService;
 
     @CircuitBreaker(name = "licenseService", fallbackMethod = "getLicensesByOrganizationFallback")
     @Retry(name = "retryLicenseService", fallbackMethod="getLicensesByOrganizationFallback")
@@ -69,7 +69,7 @@ public class LicenseService {
                 .findByOrganizationIdAndLicenseId(organizationId, licenseId)
                 .orElseThrow(() -> new AppException("license.search.error.message", licenseId, organizationId));
 
-        organizationClient.loadOrganization(organizationId)
+        organizationService.findOrganization(organizationId)
                 .ifPresent(organization -> {
                     license.setOrganizationName(organization.getName());
                     license.setContactName(organization.getContactName());

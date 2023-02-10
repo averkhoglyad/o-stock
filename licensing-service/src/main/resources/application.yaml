@@ -16,6 +16,14 @@ spring:
           brokers: localhost
           zkNodes: localhost
 
+  redis:
+    client-type: jedis
+    database: 0
+    host: localhost
+    port: 16379
+    timeout: 60000
+    ssl: false
+
 logging:
   level:
     io.averkhoglyad.ostock: DEBUG
