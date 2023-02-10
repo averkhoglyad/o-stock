@@ -4,6 +4,18 @@ spring:
   jpa:
     open-in-view: false
 
+  cloud:
+    stream:
+      bindings:
+        input:
+          destination: orgChangeTopic
+          content-type: application/json
+          group: licensingGroup
+      kafka:
+        binder:
+          brokers: localhost
+          zkNodes: localhost
+
 logging:
   level:
     io.averkhoglyad.ostock: DEBUG
