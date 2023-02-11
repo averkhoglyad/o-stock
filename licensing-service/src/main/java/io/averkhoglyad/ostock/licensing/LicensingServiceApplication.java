@@ -12,7 +12,6 @@ import org.springframework.cloud.stream.messaging.Sink;
 @RefreshScope
 @EnableDiscoveryClient
 @EnableEurekaClient
-@EnableBinding(Sink.class)
 public class LicensingServiceApplication {
 
     public static void main(String[] args) {
