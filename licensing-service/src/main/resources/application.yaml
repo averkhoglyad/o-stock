@@ -5,9 +5,11 @@ spring:
     open-in-view: false
 
   cloud:
+    function:
+      definition: orgChange
     stream:
       bindings:
-        inboundOrgChanges:
+        orgChange-in-0:
           destination: orgChangeTopic
           content-type: application/json
           group: licensingGroup

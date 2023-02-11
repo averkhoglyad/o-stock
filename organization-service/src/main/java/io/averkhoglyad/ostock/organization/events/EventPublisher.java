@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class EventPublisher {
 
-    private static final Logger logger = LoggerFactory.getLogger(EventPublisher.class);
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final StreamBridge streamBridge;
 
