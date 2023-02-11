@@ -694,7 +694,7 @@
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
-      "secret": "**********",
+      "secret": "bHX3kkwK7HFRvZbEOA3cdmS7DIlh2ir4",
       "redirectUris": [
         "http://localhost:8081/*"
       ],
@@ -800,31 +800,6 @@
             "uris": [
               "/*"
             ]
-          }
-        ],
-        "policies": [
-          {
-            "id": "b509dc76-7595-498c-b317-3ee01c53ff06",
-            "name": "Default Policy",
-            "description": "A policy that grants access only for users within this realm",
-            "type": "js",
-            "logic": "POSITIVE",
-            "decisionStrategy": "AFFIRMATIVE",
-            "config": {
-              "code": "// by default, grants any permission associated with this policy\n$evaluation.grant();\n"
-            }
-          },
-          {
-            "id": "c6987226-c022-4a44-8467-aed92bf341c8",
-            "name": "Default Permission",
-            "description": "A permission that applies to the default resource type",
-            "type": "resource",
-            "logic": "POSITIVE",
-            "decisionStrategy": "UNANIMOUS",
-            "config": {
-              "defaultResourceType": "urn:ostock:resources:default",
-              "applyPolicies": "[\"Default Policy\"]"
-            }
           }
         ],
         "scopes": [],

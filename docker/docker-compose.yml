@@ -1,22 +1,22 @@
-version: "3.9"
+version: '3.9'
 services:
   database:
     image: postgres:latest
     ports:
-      - "5432:5432"
+      - '5432:5432'
     environment:
-      POSTGRES_USER: "postgres"
-      POSTGRES_PASSWORD: "postgres"
-      POSTGRES_DB: "ostock_dev"
+      POSTGRES_USER: 'postgres'
+      POSTGRES_PASSWORD: 'postgres'
+      POSTGRES_DB: 'ostock_dev'
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/1-init.sql
       - ./data.sql:/docker-entrypoint-initdb.d/2-data.sql
     networks:
       backend:
         aliases:
-          - "database"
+          - 'database'
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      test: [ 'CMD-SHELL', 'pg_isready -U postgres' ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -28,16 +28,16 @@ services:
     networks:
       backend:
         aliases:
-          - "redis"
+          - 'redis'
 
   zookeeper:
     image: wurstmeister/zookeeper:latest
     ports:
-      - '2181:2181'
+      - '12181:2181'
     networks:
       backend:
         aliases:
-          - "zookeeper"
+          - 'zookeeper'
   kafkaserver:
     image: wurstmeister/kafka:latest
     ports:
@@ -48,31 +48,31 @@ services:
       - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
       - KAFKA_CREATE_TOPICS=orgChangeTopic:1:1
     volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock"
+      - '/var/run/docker.sock:/var/run/docker.sock'
     depends_on:
       - zookeeper
     networks:
       backend:
         aliases:
-          - "kafka"
+          - 'kafka'
 
   config-server:
     image: ostock/config-server:1.0-SNAPSHOT
     ports:
-      - "9999:9999"
+      - '9999:9999'
     environment:
       SPRING_CLOUD_CONFIG_SERVER_GIT_USERNAME: user
       SPRING_CLOUD_CONFIG_SERVER_GIT_PASSWORD: pass
     networks:
       backend:
         aliases:
-          - "config-server"
+          - 'config-server'
 
   discovery-server:
     image: ostock/discovery-server:1.0-SNAPSHOT
     ports:
-      - "8000:8000"
-    command: "--spring.config.import=configserver:http://config-server:9999"
+      - '8000:8000'
+    command: '--spring.config.import=configserver:http://config-server:9999'
     environment:
       SPRING_PROFILES_ACTIVE: dev
     restart: on-failure
@@ -82,13 +82,13 @@ services:
     networks:
       backend:
         aliases:
-          - "discovery-server"
+          - 'discovery-server'
 
   licensing:
     image: ostock/licensing-service:1.0-SNAPSHOT
     ports:
-      - "8080:8080"
-    command: "--spring.config.import=configserver:http://config-server:9999"
+      - '8080:8080'
+    command: '--spring.config.import=configserver:http://config-server:9999'
     environment:
       SPRING_PROFILES_ACTIVE: dev
     depends_on:
@@ -104,8 +104,8 @@ services:
   organization:
     image: ostock/organization-service:1.0-SNAPSHOT
     ports:
-      - "8090:8090"
-    command: "--spring.config.import=configserver:http://config-server:9999"
+      - '8090:8090'
+    command: '--spring.config.import=configserver:http://config-server:9999'
     environment:
       SPRING_PROFILES_ACTIVE: dev
     depends_on:
@@ -119,24 +119,22 @@ services:
       - backend
 
   keycloak:
-    image: jboss/keycloak:latest
-    restart: always
+    image: quay.io/keycloak/keycloak:20.0.3
+#    restart: always
     environment:
-      KEYCLOAK_USER: admin
-      KEYCLOAK_PASSWORD: admin
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
     volumes:
-      - ./realm-export.json:/opt/jboss/keycloak/realm-export.json
+      - ./ostock-realm.json:/opt/keycloak/data/import/realm.json
     command:
-      - "-b 0.0.0.0"
-      - "-Dkeycloak.import=/opt/jboss/keycloak/realm-export.json"
-      - "-Dkeycloak.profile.feature.scripts=enabled"
-      - "-Dkeycloak.profile.feature.upload_scripts=enabled"
+      - start-dev
+      - --import-realm
     ports:
-      - "9090:8080"
+      - '9090:8080'
     networks:
       backend:
         aliases:
-          - "keycloak"
+          - 'keycloak'
 
 networks:
   backend:
