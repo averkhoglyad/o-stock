@@ -7,7 +7,7 @@ spring:
   cloud:
     stream:
       bindings:
-        output:
+        orgChange:
           destination: orgChangeTopic
           content-type: application/json
       kafka:

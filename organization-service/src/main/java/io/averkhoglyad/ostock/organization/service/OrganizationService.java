@@ -1,7 +1,7 @@
 package io.averkhoglyad.ostock.organization.service;
 
 import io.averkhoglyad.ostock.organization.events.ActionEnum;
-import io.averkhoglyad.ostock.organization.events.EventsChannel;
+import io.averkhoglyad.ostock.organization.events.EventPublisher;
 import io.averkhoglyad.ostock.organization.model.Organization;
 import io.averkhoglyad.ostock.organization.repository.OrganizationRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,11 +17,11 @@ import static io.averkhoglyad.ostock.organization.util.TransactionSynchronizatio
 public class OrganizationService {
 
     private final OrganizationRepository repository;
-    private final EventsChannel eventsChannel;
+    private final EventPublisher eventPublisher;
 
     @Transactional(readOnly = true)
     public Organization findById(String organizationId) {
-        synchronizeTransaction(sync -> sync.afterCommit(() -> eventsChannel.publishOrganizationChange(ActionEnum.GET, organizationId)));
+        synchronizeTransaction(sync -> sync.afterCommit(() -> eventPublisher.publish(ActionEnum.GET, organizationId)));
         return repository.findById(organizationId)
                 .orElse(null);
     }
@@ -32,14 +32,14 @@ public class OrganizationService {
         organization = repository.save(organization);
         var organizationId = organization.getId();
         synchronizeTransaction(sync ->
-                sync.afterCommit(() -> eventsChannel.publishOrganizationChange(ActionEnum.CREATE, organizationId)));
+                sync.afterCommit(() -> eventPublisher.publish(ActionEnum.CREATE, organizationId)));
         return organization;
     }
 
     @Transactional
     public Organization update(Organization organization) {
         synchronizeTransaction(sync ->
-                sync.afterCommit(() -> eventsChannel.publishOrganizationChange(ActionEnum.UPDATE, organization.getId())));
+                sync.afterCommit(() -> eventPublisher.publish(ActionEnum.UPDATE, organization.getId())));
         return repository.save(organization);
     }
 
@@ -47,6 +47,6 @@ public class OrganizationService {
     public void delete(Organization organization) {
         repository.deleteById(organization.getId());
         synchronizeTransaction(sync ->
-                sync.afterCommit(() -> eventsChannel.publishOrganizationChange(ActionEnum.DELETE, organization.getId())));
+                sync.afterCommit(() -> eventPublisher.publish(ActionEnum.DELETE, organization.getId())));
     }
 }

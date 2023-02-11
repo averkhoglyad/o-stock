@@ -8,7 +8,6 @@ import org.springframework.cloud.stream.messaging.Source;
 
 @SpringBootApplication
 @RefreshScope
-@EnableBinding(Source.class)
 public class OrganizationServiceApplication {
 
     public static void main(String[] args) {
