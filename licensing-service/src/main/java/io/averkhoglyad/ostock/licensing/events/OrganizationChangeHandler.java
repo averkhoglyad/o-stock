@@ -1,34 +1,28 @@
 package io.averkhoglyad.ostock.licensing.events;
 
+import io.averkhoglyad.ostock.licensing.repository.OrganizationRedisRepository;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.messaging.Message;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class OrganizationChangeHandler {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
+    private final OrganizationRedisRepository organizationRepository;
+
     public void handleOrgChange(Message<OrganizationChangeModel> message) {
         var orgChange = message.getPayload();
         logger.debug("Received an {} event for organization id {}", orgChange.getAction(), orgChange.getOrganizationId());
-        switch(orgChange.getAction()){
-            case "GET":
-                logger.debug("Received a GET event from the organization service for organization id {}", orgChange.getOrganizationId());
-                break;
-            case "CREATE":
-                logger.debug("Received a CREATE event from the organization service for organization id {}", orgChange.getOrganizationId());
-                break;
+        switch (orgChange.getAction()) {
             case "UPDATE":
-                logger.debug("Received a UPDATE event from the organization service for organization id {}", orgChange.getOrganizationId());
-                break;
-            case "DELETE":
-                logger.debug("Received a DELETE event from the organization service for organization id {}", orgChange.getOrganizationId());
-                break;
-            default:
-                logger.error("Received an UNKNOWN event from the organization service of type {}", orgChange.getType());
-                break;
+            case "DELETE": {
+                organizationRepository.deleteById(orgChange.getOrganizationId());
+            }
         }
     }
 
