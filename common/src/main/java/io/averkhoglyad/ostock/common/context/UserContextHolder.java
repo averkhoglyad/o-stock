@@ -2,7 +2,7 @@ package io.averkhoglyad.ostock.common.context;
 
 import org.springframework.util.Assert;
 
-public class UserContextHolder {
+public abstract class UserContextHolder {
 
     private static final ThreadLocal<UserContext> userContext = new ThreadLocal<>();
 

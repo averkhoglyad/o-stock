@@ -14,15 +14,10 @@ public class UserContextFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         var httpServletRequest = (HttpServletRequest) servletRequest;
-
         var context = UserContextHolder.getContext();
-        context.setTrackingId(httpServletRequest.getHeader(Headers.TRACKING_ID));
         context.setUserId(httpServletRequest.getHeader(Headers.USER_ID));
         context.setAuthToken(httpServletRequest.getHeader(Headers.AUTH_TOKEN));
         context.setOrganizationId(httpServletRequest.getHeader(Headers.ORGANIZATION_ID));
-
-        logger.debug("UserContextFilter tracking id: {}", context.getTrackingId());
-
         filterChain.doFilter(httpServletRequest, servletResponse);
     }
 

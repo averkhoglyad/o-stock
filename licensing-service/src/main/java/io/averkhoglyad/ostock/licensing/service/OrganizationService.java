@@ -1,7 +1,5 @@
 package io.averkhoglyad.ostock.licensing.service;
 
-import io.averkhoglyad.ostock.common.context.UserContext;
-import io.averkhoglyad.ostock.common.context.UserContextHolder;
 import io.averkhoglyad.ostock.licensing.model.Organization;
 import io.averkhoglyad.ostock.licensing.repository.OrganizationRedisRepository;
 import io.averkhoglyad.ostock.licensing.service.client.OrganizationClient;
@@ -22,8 +20,6 @@ public class OrganizationService {
     private final OrganizationRedisRepository redisRepository;
 
     public Optional<Organization> findOrganization(String organizationId) {
-        logger.debug("In Licensing Service.getOrganization: {}", UserContextHolder.getContext().getTrackingId());
-
         var organization = checkRedisCache(organizationId);
         if (organization.isPresent()) {
             logger.debug("I have successfully retrieved an organization {} from the redis cache: {}", organizationId, organization);

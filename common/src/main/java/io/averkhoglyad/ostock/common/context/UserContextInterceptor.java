@@ -18,8 +18,9 @@ public class UserContextInterceptor implements ClientHttpRequestInterceptor {
     public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
         HttpHeaders headers = request.getHeaders();
         UserContext context = UserContextHolder.getContext();
-        headers.add(Headers.TRACKING_ID, context.getTrackingId());
+        headers.add(Headers.USER_ID, context.getUserId());
         headers.add(Headers.AUTH_TOKEN, context.getAuthToken());
+        headers.add(Headers.ORGANIZATION_ID, context.getOrganizationId());
         return execution.execute(request, body);
     }
 }

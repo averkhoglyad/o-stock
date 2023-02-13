@@ -3,6 +3,8 @@ package io.averkhoglyad.ostock.organization.controller;
 import io.averkhoglyad.ostock.organization.model.Organization;
 import io.averkhoglyad.ostock.organization.service.OrganizationService;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,11 +15,13 @@ import javax.annotation.security.RolesAllowed;
 @RequiredArgsConstructor
 public class OrganizationController {
 
+    private final Logger logger = LoggerFactory.getLogger(getClass());
     private final OrganizationService service;
 
     @GetMapping("/{organizationId}")
     @RolesAllowed("ADMIN")
     public Organization details(@PathVariable("organizationId") String organizationId) {
+        logger.debug("Organization details for #{}", organizationId);
         return service.findById(organizationId);
     }
 
