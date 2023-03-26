@@ -25,6 +25,13 @@ spring:
     port: 16379
     timeout: 60000
     ssl: false
+  sleuth:
+    sampler:
+      percentage: 1
+
+zipkin:
+  baseUrl: localhost:9411
+
 
 logging:
   level:
